@@ -1,0 +1,891 @@
+{
+    "header": 1432778632, // An iterator, probably to identify each navdata
+    "droneState": {
+        "flying": 1,
+        "videoEnabled": 0,
+        "visionEnabled": 1,
+        "controlAlgorithm": 0,
+        "altitudeControlAlgorithm": 1,
+        "startButtonState": 1,
+        "controlCommandAck": 0,
+        "cameraReady": 1,
+        "travellingEnabled": 0,
+        "usbReady": 0,
+        "navdataDemo": 0,
+        "navdataBootstrap": 0,
+        "motorProblem": 0,
+        "communicationLost": 0,
+        "softwareFault": 0,
+        "lowBattery": 0,
+        "userEmergencyLanding": 0,
+        "timerElapsed": 0,
+        "MagnometerNeedsCalibration": 0,
+        "anglesOutOfRange": 0,
+        "tooMuchWind": 0,
+        "ultrasonicSensorDeaf": 0,
+        "cutoutDetected": 0,
+        "picVersionNumberOk": 1,
+        "atCodecThreadOn": 1,
+        "navdataThreadOn": 1,
+        "videoThreadOn": 1,
+        "acquisitionThreadOn": 1,
+        "controlWatchdogDelay": 0,
+        "adcWatchdogDelay": 0,
+        "comWatchdogProblem": 0,
+        "emergencyLanding": 0
+    },
+    "sequenceNumber": 203442,
+    "visionFlag": 1,
+    "demo": {
+        "controlState": "CTRL_HOVERING", // This represents what the drone thinks it is doing
+        "batteryPercentage": 63, // Percentage
+        // Rotation is relative to the last flat trim 
+        "rotation": {
+            "frontBack": 0.43,    "pitch": 0.43,  "theta": 0.43,  "y": 0.43,   // [deg] (Equal to data.demo.frontBackDegrees) (upwards pitch is positive)
+            "leftRight": -0.551,  "roll": -0.551, "phi": -0.551,  "x": -0.551, // [deg] (Equal to data.demo.leftRightDegrees) (tilt to its right is positive)
+            "clockwise": 151.579, "yaw": 151.579, "psi": 151.579, "z": 151.579 // [deg] (Equal to data.demo.clockwiseDegrees) (clockwise is positve)
+        },
+        "frontBackDegrees": 0.43,
+        "leftRightDegrees": -0.551,
+        "clockwiseDegrees": 151.579,
+        
+        "altitude": 1.003, "altitudeMeters": 1.003, // [m]
+        
+        // Velocity
+        "velocity": {
+            "x": 12.162104606628418, // Equal to data.demo.xVelocity
+            "y": -54.452857971191406, // Equal to data.demo.yVelocity
+            "z": 0 // Equal to data.demo.zVelocity
+        },
+        "xVelocity": 12.162104606628418,
+        "yVelocity": -54.452857971191406,
+        "zVelocity": 0,
+        
+        "frameIndex": 0,
+        "detection": {
+            "camera": {
+                "rotation": { // The following is a matrix
+                    "m11": 0, "m12": 0, "m13": 0,
+                    "m21": 0, "m22": 0, "m23": 0,
+                    "m31": 0, "m32": 0, "m33": 0
+                },
+                "translation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "type": 3
+            },
+            "tagIndex": 0
+        },
+        "drone": {
+            "camera": {
+                "rotation": { // The following is a matrix
+                    "m11": -0.5580621957778931,   "m12": -0.8297095894813538,   "m13": -0.012180674821138382,
+                    "m21": 0.8297649025917053,    "m22": -0.5581122040748596,   "m23": 0.0008684806525707245,
+                    "m31": -0.007518771570175886, "m32": -0.009622431360185146, "m33": 0.999925434589386
+                },
+                "translation": {
+                    "x": -536.876953125,
+                    "y": -430.7493896484375,
+                    "z": -777
+                }
+            }
+        }
+    },
+    "time": 1018588.317, // [ms] // This is the current time
+    // Raw Measures represent the Least Significant Bit
+    "rawMeasures": {
+        "accelerometers": {
+            "x": 2140,
+            "y": 2020,
+            "z": 2556
+        },
+        "gyroscopes": {
+            "x": -68,
+            "y": -174,
+            "z": -69
+        },
+        "gyrometers": {
+            "x": -68,
+            "y": -174,
+            "z": -69
+        },
+        "gyroscopes110": {
+            "x": 0,
+            "y": 0
+        },
+        "gyrometers110": [
+            0,
+            0
+        ],
+        // End least 
+        "batteryMilliVolt": 11456, // in mV
+        // Ultra-sound
+        "us": {
+            "echo": {
+                "start": 9577,
+                "end": 10065,
+                "association": 19,
+                "distance": 1240
+            },
+            "curve": {
+                "time": 0,
+                "value": 0,
+                "ref": 0
+            }
+        },
+        "usDebutEcho": 9577,
+        "usFinEcho": 10065,
+        "usAssociationEcho": 19,
+        "usDistanceEcho": 1240,
+        "usCourbeTemps": 0,
+        "usCourbeValeur": 0,
+        "usCourbeRef": 0,
+        "echo": {
+            "flagIni": 1,
+            "num": 3,
+            "sum": 0
+        },
+        "flagEchoIni": 1,
+        "nbEcho": 3,
+        "sumEcho": 0,
+        
+        "altTemp": 777,
+        "altTempRaw": 777
+    },
+    // physMeasures represent the Least Significant Bit unless otherwise noted
+    "physMeasures": {
+        "temperature": {
+            "accelerometer": 48.78205108642578, // [K]
+            "gyroscope": 56482
+        },
+        "accelerometers": { // [mg]
+            "x": 158.171142578125,
+            "y": -83.18058776855469,
+            "z": -855.7070922851562
+        },
+        "gyroscopes": { // [deg/s]
+            "x": -10.670517921447754,
+            "y": 2.474531412124634,
+            "z": 4.395028591156006
+        },
+        "alim3V3": 0,
+        "vrefEpson": 0,
+        "vrefIDG": 0
+    },
+    "gyrosOffsets": {
+        "x": 1.5919007062911987,
+        "y": -0.07414760440587997,
+        "z": 0
+    },
+    // Angles
+    "eulerAngles": {
+        "theta": 10422, // [mdeg?]
+        "phi": 5551 // [mdeg?]
+    },
+    // References are in mdeg unless otherwise noted
+    "references": {
+        "theta": 1102,
+        "phi": -335,
+        "thetaI": 7954,
+        "phiI": -93385,
+        "pitch": 13858,
+        "roll": -91489,
+        "yaw": 53214, // [mdeg/s]
+        "psi": 169743,
+        "vx": 0,
+        "vy": 0,
+        "thetaMod": 0.008454404771327972,
+        "phiMod": -0.010623889975249767,
+        "kVX": 0.000244140625,
+        "kVY": 0.000244140625,
+        "kMode": 4,
+        "ui": {
+            "time": 0,
+            "theta": 0,
+            "phi": 0,
+            "psi": 0,
+            "psiAccuracy": 0,
+            "seq": 0
+        }
+    },
+    "trims": {
+        "angularRates": {
+            "r": 0
+        },
+        "eulerAngles": {
+            "theta": 7320.0419921875, // [mdeg?]
+            "phi": 2904.92626953125 // [mdeg?]
+        }
+    },
+    "rcReferences": {
+        "pitch": -1, // [mdeg?]
+        "roll": -1, // [mdeg?]
+        "yaw": 0, // [mdeg/s?]
+        "gaz": 0,
+        "ag": 0
+    },
+    // All of the following values are in PWM except where otherwise noted
+    "pwm": {
+        "motors": [
+            70,
+            203,
+            103,
+            158
+        ],
+        "satMotors": [
+            255,
+            255,
+            255,
+            255
+        ],
+        "gazFeedForward": 320.0890808105469,
+        "gazAltitude": -52.57178497314453,
+        "altitudeIntegral": -58.6982421875, // [mm/s]
+        "vzRef": 0, // [mm/s]
+        "uPitch": -33,
+        "uRoll": -44,
+        "uYaw": 154,
+        "yawUI": -52.57178497314453, // [PWM] yaw_u_I
+        "uPitchPlanif": -11,
+        "uRollPlanif": -5,
+        "uYawPlanif": 8,
+        "uGazPlanif": 31.095943450927734,
+        "motorCurrents": [ // [mA]
+            0,
+            0,
+            0,
+            0
+        ],
+        "altitudeProp": 5.126953125,
+        "altitudeDer": 1.003423810005188
+    },
+    "altitude": {
+        "vision": 781, // [mm]
+        "velocity": 10.275059700012207, // [mm/s]
+        "ref": 1028, // [mm]
+        "raw": 777, // [mm]
+        "observer": {
+            "acceleration": 0, // [m/s2]
+            "altitude": 0, // [m]
+            "x": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "state": 0
+        },
+        "estimated": {
+            "vb": {
+                "x": 0,
+                "y": 0
+            },
+            "state": 0
+        }
+    },
+    "visionRaw": {
+        "tx": 9.172710418701172,
+        "ty": -5.450432300567627,
+        "tz": 0
+    },
+    "visionOf": {
+        "dx": [
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "dy": [
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "vision": {
+        "state": 2,
+        "misc": 0,
+        "phi": {
+            "trim": -0.0191518422216177, // [rad]
+            "refProp": 0.013294154778122902 // [rad]
+        },
+        "theta": {
+            "trim": 0.016272371634840965, // [rad]
+            "refProp": 0.002969263819977641 // [rad]
+        },
+        "newRawPicture": 0,
+        "capture": {
+            "theta": 0.007716508582234383,
+            "phi": -0.007528547663241625,
+            "psi": 2.6419413089752197,
+            "altitude": 781,
+            "time": 1018.573
+        },
+        "bodyV": { // [mm/s]
+            "x": 12.084505081176758,
+            "y": -54.550086975097656,
+            "z": 9.841750144958496
+        },
+        "delta": {
+            "phi": 0,
+            "theta": 0,
+            "psi": 0
+        },
+        "gold": {
+            "defined": 0,
+            "reset": 0,
+            "x": 0,
+            "y": 0
+        }
+    },
+    "visionPerf": {
+        "szo": 0,
+        "corners": 0,
+        "compute": 0,
+        "tracking": 0,
+        "trans": 0,
+        "update": 0,
+        "custom": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "trackersSend": {
+        "locked": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "point": [
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            },
+            {
+                "x": 0,
+                "y": 0
+            }
+        ]
+    },
+    "visionDetect": {
+        "nbDetected": 0,
+        "type": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "xc": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "yc": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "width": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "height": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "dist": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "orientationAngle": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "rotation": [ // The following are matrices
+            {
+                "m11": 0, "m12": 0, "m13": 0,
+                "m21": 0, "m22": 0, "m23": 0,
+                "m31": 0, "m32": 0, "m33": 0
+            },
+            {
+                "m11": 0, "m12": 0, "m13": 0,
+                "m21": 0, "m22": 0, "m23": 0,
+                "m31": 0, "m32": 0, "m33": 0
+            },
+            {
+                "m11": 0, "m12": 0, "m13": 0,
+                "m21": 0, "m22": 0, "m23": 0,
+                "m31": 0, "m32": 0, "m33": 0
+            },
+            {
+                "m11": 0, "m12": 0, "m13": 0,
+                "m21": 0, "m22": 0, "m23": 0,
+                "m31": 0, "m32": 0, "m33": 0
+            }
+        ],
+        "translation": [
+            {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            }
+        ],
+        "cameraSource": [
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "watchdog": 5000,
+    "adcDataFrame": {
+        "version": 0,
+        "dataFrame": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "videoStream": {
+        "quant": 0,
+        "frame": {
+            "size": 2665, // [bytes]
+            "number": 31033
+        },
+        "atcmd": {
+            "sequence": 1935,
+            "meanGap": 0, // [ms]
+            "varGap": 1, // [SU] (Statistical Unit?)
+            "quality": 0
+        },
+        "bitrate": {
+            "out": 0,
+            "desired": 0
+        },
+        "data": [
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "tcpQueueLevel": 0,
+        "fifoQueueLevel": 0
+    },
+    "games": {
+        "counters": {
+            "doubleTap": 0,
+            "finishLine": 0
+        }
+    },
+    "pressureRaw": {
+        "up": 39765, // [LSB]
+        "ut": 27844, // [LSB]
+        "temperature": 464, // [0_1C]
+        "pressure": 98946 // [Pa]
+    },
+    "magneto": {
+        "mx": 6, // [LSB]
+        "my": 40, // [LSB]
+        "mz": -98, // [LSB]
+        // "rectified" = "raw" + "offset"
+        "raw": { // [mG]
+            "x": -137.34375,
+            "y": -20.7421875,
+            "z": 351.421875
+        },
+        "rectified": { // [mG]
+            "x": -376.0541687011719,
+            "y": -98.30046081542969,
+            "z": 351.421875
+        },
+        "offset": { // [mG]
+            "x": 238.71041870117188,
+            "y": 77.55827331542969,
+            "z": 0
+        },
+        "heading": {
+            "unwrapped": 165.35073852539062, // [deg]
+            "gyroUnwrapped": -22.735754013061523, // [deg]
+            "fusionUnwrapped": 151.57984924316406 // [mdeg]
+        },
+        "ok": 1,
+        "state": 2, // [SU]
+        "radius": 229.93942260742188, // [mG]
+        "error": {
+            "mean": 130.95298767089844, // [mG]
+            "variance": 234.720703125 // [mG2]
+        }
+    },
+    "windSpeed": {
+        "speed": 1.4236135482788086, // [m/s]
+        "angle": 120.4849624633789, // [deg]
+        "compensation": {
+            "theta": 0, // [rad]
+            "phi": 0
+        },
+        "stateX": [ // [SU]
+            69.92884063720703,
+            -92.37828063964844,
+            -722.2156982421875,
+            1226.8170166015625,
+            61.44002151489258,
+            174.75289916992188
+        ],
+        "debug": [
+            0,
+            0,
+            0
+        ]
+    },
+    "kalmanPressure": {
+        "offsetPressure": 98966, // [Pa]
+        "estimated": {
+            "altitude": 1003.4513549804688, // [mm]
+            "velocity": -10.275059700012207, // [m/s]
+            "angle": {
+                "pwm": -2.1691911220550537, // [m/s2]
+                "pressure": -3.002427816390991 // [Pa]
+            },
+            "us": {
+                "offset": 0.2214900404214859, // [m]
+                "prediction": 806.300048828125 // [mm]
+            },
+            "covariance": {
+                "alt": 0.025217635557055473, // [m]
+                "pwm": 0.04591158777475357,
+                "velocity": 0.08457156270742416 // [m/s]
+            },
+            "groundEffect": false, // [SU]
+            "sum": -2, // [mm]
+            "reject": true, // [SU]
+            "uMultisinus": 2.358385315458667e-41,
+            "gazAltitude": 0,
+            "flagMultisinus": false,
+            "flagMultisinusStart": false
+        }
+    },
+    "hdvideoStream": {
+        "hdvideoState": 0,
+        "storageFifo": {
+            "nbPackets": 0,
+            "size": 0
+        },
+        "usbkey": {
+            "size": 0,
+            "freespace": 0,
+            "remainingTime": 0
+        },
+        "frameNumber": 0
+    },
+    "wifi": {
+        "linkQuality": 1
+    },
+    "gps": {
+        "latitude": 0,
+        "longitude": 0,
+        "elevation": 0,
+        "hdop": 0,
+        "dataAvailable": 0,
+        "zeroValidated": 0,
+        "wptValidated": 0,
+        "lat0": 0,
+        "lon0": 0,
+        "latFuse": -0.000026488417336413096,
+        "lonFuse": -0.000023890640460455944,
+        "gpsState": 0,
+        "xTraj": 0,
+        "xRef": 0,
+        "yTraj": 0,
+        "yRef": 0,
+        "thetaP": 0,
+        "phiP": 0,
+        "thetaI": 0,
+        "phiI": 0,
+        "thetaD": 0,
+        "phiD": 0,
+        "vdop": 0,
+        "pdop": 0,
+        "speed": 0,
+        "lastFrameTimestamp": 0,
+        "degree": 0,
+        "degreeMag": 0,
+        "ehpe": 0,
+        "ehve": 0,
+        "c_n0": 0,
+        "nbSatellites": 0,
+        "channels": [
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            },
+            {
+                "sat": 0,
+                "cn0": 0
+            }
+        ],
+        "gpsPlugged": 0,
+        "ephemerisStatus": 0,
+        "vxTraj": 0,
+        "vyTraj": 0,
+        "firmwareStatus": 0
+    },
+    "undefined": {
+        "message": "Option not implemented yet: undefined (0x1d)",
+        "stack": "Error: Option not implemented yet: undefined (0x1d)\n    at UdpNavdataStream.parseNavdata [as _parseNavdata] (/home/john/Desktop/UDRI_Code/waypoint-navigation/node_modules/ardrone-autonomy-custom/node_modules/ar-drone/lib/navdata/parseNavdata.js:64:9)\n    at UdpNavdataStream._handleMessage (/home/john/Desktop/UDRI_Code/waypoint-navigation/node_modules/ardrone-autonomy-custom/node_modules/ar-drone/lib/navdata/UdpNavdataStream.js:61:20)\n    at emitTwo (events.js:87:13)\n    at Socket.emit (events.js:172:7)\n    at UDP.onMessage (dgram.js:480:8)"
+    }
+}

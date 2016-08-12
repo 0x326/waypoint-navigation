@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <textarea id="consoleOutput" readonly></textarea>
+        <script type="application/javascript" src="keyboard.js"></script>
+        <script type="application/javascript" src="socket.io-1.4.5.js"></script>
+        <script type="application/javascript" src="browser-logic.js"></script>
+        <script type="application/javascript">
+            var socket = io.connect(window.location.href);
+            socket.on('console', function (data) {
+                'use strict';
+                // Send output to textbox
+                var outputElem = document.getElementById("consoleOutput");
+                outputElem.textContent += String(data);
+            });
+        </script>
+    </body>
+</html>
