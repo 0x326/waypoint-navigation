@@ -59,25 +59,20 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 // Read arguments
-                if (args[0] == "loiter") // is a loiter command
-                {
-                    if (typeof(args[1]) != "undefined")
-                    {
-                        try
-                        {
+                if (args[0] == "loiter") { // is a loiter command
+                    if (typeof(args[1]) != "undefined") {
+                        try {
                             var time = Number(args[1]);
                             // Convert to miliseconds
                             time *= 1000;
                             waypointNavigation.addLoiterWaypoint(time);
                         }
-                        catch (err)
-                        {
+                        catch (err) {
                             err.message = "The argument for loiter time is not a number. Defaulting to 5 seconds";
                             waypointNavigation.addLoiterWaypoint(5000);
                         }
                     }
-                    else
-                    {
+                    else {
                         console.log("No loiter time specified. Loitering for 5 seconds");
                         waypointNavigation.addLoiterWaypoint(5000);
                     }
@@ -223,10 +218,8 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
-                if (typeof(args[0]) != "undefined")
-                {
-                    try
-                    {
+                if (typeof(args[0]) != "undefined") {
+                    try {
                         commandSpeed = Number(args[0]);
                     }
                     catch (err)
@@ -244,14 +237,11 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
-                if (typeof(args[0]) != "undefined")
-                {
-                    try
-                    {
+                if (typeof(args[0]) != "undefined") {
+                    try {
                         commandSpeed = Number(args[0]);
                     }
-                    catch (err)
-                    {
+                    catch (err) {
                         // Send error notice to the console but don't throw an error
                         console.error("Backward command does not have a numerical speed");
                     }
@@ -265,14 +255,11 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
-                if (typeof(args[0]) != "undefined")
-                {
-                    try
-                    {
+                if (typeof(args[0]) != "undefined") {
+                    try {
                         commandSpeed = Number(args[0]);
                     }
-                    catch (err)
-                    {
+                    catch (err) {
                         // Send error notice to the console but don't throw an error
                         console.error("Left command does not have a numerical speed");
                     }
@@ -286,14 +273,11 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
-                if (typeof(args[0]) != "undefined")
-                {
-                    try
-                    {
+                if (typeof(args[0]) != "undefined") {
+                    try {
                         commandSpeed = Number(args[0]);
                     }
-                    catch (err)
-                    {
+                    catch (err) {
                         // Send error notice to the console but don't throw an error
                         console.error("Right command does not have a numerical speed");
                     }
@@ -307,14 +291,11 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
-                if (typeof(args[0]) != "undefined")
-                {
-                    try
-                    {
+                if (typeof(args[0]) != "undefined") {
+                    try {
                         commandSpeed = Number(args[0]);
                     }
-                    catch (err)
-                    {
+                    catch (err) {
                         // Send error notice to the console but don't throw an error
                         console.error("Clockwise command does not have a numerical speed");
                     }
@@ -328,14 +309,11 @@ function startRepl () {
         action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
-                if (typeof(args[0]) != "undefined")
-                {
-                    try
-                    {
+                if (typeof(args[0]) != "undefined") {
+                    try {
                         commandSpeed = Number(args[0]);
                     }
-                    catch (err)
-                    {
+                    catch (err) {
                         // Send error notice to the console but don't throw an error
                         console.error("Counter-clockwise command does not have a numerical speed");
                     }
@@ -374,8 +352,7 @@ function startRepl () {
             executeCommand(this, argv, function (args) {
                 // The following is modified from https://github.com/eschnou/ardrone-webflight/blob/master/plugins/pilot/public/js/pilot.js
                 var direction = null;
-                if (typeof(args[0]) == "undefined")
-                {
+                if (typeof(args[0]) == "undefined") {
                     //TODO: Flip in the direction of motion
                     waypointNavigation.mission().client().animate('flipLeft', 1000);
                 }
@@ -491,39 +468,7 @@ function interpretCoordinate (args) {
     });
     return {x: xCoordinate, y:yCoordinate, z:zCoordinate, units:units, prescript:prescript, postscript:postscript};
 }
-const KEY_CODE_MAP =  {"0":"96","1":"97","2":"98","3":"99","4":"100","5":"101","6":"102","7":"103","8":"104","9":"105","backspace":"8","tab":"9","return":"13","shift":"16","ctrl":"17","alt":"18","pausebreak":"19","capslock":"20","escape":"27"," ":"32","pageup":"33","pagedown":"34","end":"35","home":"36","left":"37","up":"38","right":"39","down":"40","+":"107","printscreen":"44","insert":"45","delete":"46",";":"186","=":"187","a":"65","b":"66","c":"67","d":"68","e":"69","f":"70","g":"71","h":"72","i":"73","j":"74","k":"75","l":"76","m":"77","n":"78","o":"79","p":"80","q":"81","r":"82","s":"83","t":"84","u":"85","v":"86","w":"87","x":"88","y":"89","z":"90","*":"106","-":"189",".":"190","/":"191","f1":"112","f2":"113","f3":"114","f4":"115","f5":"116","f6":"117","f7":"118","f8":"119","f9":"120","f10":"121","f11":"122","f12":"123","numlock":"144","scrolllock":"145",",":"188","`":"192","[":"219","\\":"220","]":"221","'":"222"};
-function startManualOverride () {
-    // Setup Key Map for One-handed controls
-    var forward  = 'w',
-        backward = 's',
-        left     = 'a',
-        right    = 'd',
-        clockwise = 'e',
-        counterClockwise = 'q',
-        stop = 'x',
-        takeoff = 't',
-        land = 'r',
-        disableEmergency = 'g',
-        enableEmergency = 'v',
-        flip     = 'f',
-        channel  = 'c'
-      ;
-    var keyMap = {};
-    keyMap[KEY_CODE_MAP[forward]] = {command:'move-forward'};
-    keyMap[KEY_CODE_MAP[backward]] = {command:'move-backward'};
-    keyMap[KEY_CODE_MAP[left]] = {command:'move-left'};
-    keyMap[KEY_CODE_MAP[right]] = {command:'move-right'};
-    keyMap[KEY_CODE_MAP[clockwise]] = {command:'move-clockwise'};
-    keyMap[KEY_CODE_MAP[counterClockwise]] = {command:'move-counterClockwise'};
-    keyMap[KEY_CODE_MAP[flip]] = {command:'flip-flip'};
-    keyMap[KEY_CODE_MAP[channel]] = {command:'channel-change'};
-    // Disable controller
-    waypointNavigation.mission().control().disable();
-    // Bind keyboard listeners
-    keyboardJS.bind(KEY_CODE_MAP[forward], function (e) {
-        console.log(e);
-    });
-}
+
 // This function provides a wrapper to do the redundant tasks that must always be done before and after executing the logic of a command
 // The `callback` function should accept an Array of Strings
 function executeCommand(self, argv, funct) {

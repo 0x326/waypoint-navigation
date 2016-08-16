@@ -237,8 +237,7 @@ WaypointNavigator.prototype.removeWaypoint = function (arrayIndex)
 WaypointNavigator.prototype.addLoiterWaypoint = function (time)
 {
     console.log(chalk.dim("Adding loiter waypoint"));
-    if (this.waypointBuffer.length > 0)
-    {
+    if (this.waypointBuffer.length > 0) {
         var waypoint = this.waypointBuffer[this.waypointBuffer.length - 1];
         waypoint.prescript = function () {
             mission.hover(time);
@@ -313,8 +312,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
     else if (this.waypointBuffer.length > 0) {
         // Buffer not overridden but it has more waypoints. Proceed
     }
-    else
-    {
+    else {
         // There is no waypoint parameter and the waypoint buffer is empty so
         // the buffer must be complete
         console.log(chalk.green("!!!! ") + "Buffer Complete" + chalk.green(" !!!!"));
@@ -333,14 +331,12 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
     waypoint = this.waypointBuffer[0];
     console.log(chalk.green("Activating waypoint: " + waypoint.location));
     // Call the prescript only once
-    if (!waypoint.prescript.isCalled)
-    {
+    if (!waypoint.prescript.isCalled) {
         console.log("Executing prescript");
         // Activate its prescript
         this.waypointBuffer[0].prescript.isCalled = true;
         try { waypoint.prescript(this.activateWaypoint.bind(this)); }
-        catch (err)
-        {
+        catch (err) {
             err.message = "Error while executing prescript: " + err.message;
             console.error(err);
             var self = this;
@@ -348,16 +344,14 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
                 self.activateWaypoint();
             });
         }
-        finally
-        {
+        finally {
             return;
         }
     }
     // Recall location of waypoint
     //   waypoint.location;
     //   waypoint.locationUnits;
-    if (waypoint.locationUnits == "GPS")
-    {
+    if (waypoint.locationUnits == "GPS") {
         console.log(chalk.dim("Waypoint is a GPS coordinate"));
         // Get GPS location of drone
         var droneGpsLocation = this.getDroneGpsLocation();
@@ -380,8 +374,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
         // Calculate angle needed to rotate so that the drone is facing the waypoint
         var yawAdjustment = displacementBearing - droneBearing;
     }
-    else
-    {
+    else {
         console.log(chalk.dim("Waypoint is a coordinate"));
         // Get location of drone
         var droneLocation = this.getDroneLocation();
@@ -397,8 +390,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
         // Calculate angle of vector (in radians)
         console.log(chalk.inverse.blue("Displacement Vector: ", displacementVector.elements));
         var displacementAngle = Math.atan2(displacementVector.elements[1], displacementVector.elements[0]);
-        if (displacementAngle !== null)
-        {
+        if (displacementAngle !== null) {
             // Get angle of drone
             var droneBearing = this.getDroneAbsoluteBearing();
             console.log(chalk.blue("Drone Bearing: ", droneBearing / Math.PI * 180));
@@ -408,10 +400,10 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
             // Calculate angle needed to rotate so that the drone is facing the waypoint
             var yawAdjustment = displacementAngle - droneBearing;
         }
-        else
-        {
+        else {
             // The displacement has no angle, so adjsut zero
-            var yawAdjustment = displacementAngle = 0;
+            displacementAngle = 0;
+            var yawAdjustment = 0;
         }
     }
     // Convert yaw adjsutment to degrees and normalize
@@ -424,8 +416,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
     console.log(chalk.dim("Crafting mision"));
     mission.zero();
     mission.hover(100);
-    if (shouldRotateTowardsWaypoint)
-    {
+    if (shouldRotateTowardsWaypoint) {
         var displacement= Math.hypot(displacementVector.elements[0], displacementVector.elements[1]);
         // Rotate drone in small increments so that it does not flip
         // `incrementalAngleAdjustment` is in degrees
@@ -459,8 +450,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
 
 WaypointNavigator.prototype.reviewMission = function (error, results) 
 {
-    if (typeof error == "object" && error instanceof Error && error.message == "Mission Aborted")
-    {
+    if (typeof error == "object" && error instanceof Error && error.message == "Mission Aborted") {
         console.log("Mission Aborted");
         return;
     }
@@ -468,15 +458,13 @@ WaypointNavigator.prototype.reviewMission = function (error, results)
     //TODO: Add Error handling
     // Get waypoint from buffer
     var waypoint = this.waypointBuffer[0];
-    if (waypoint.locationUnits == "GPS")
-    {
+    if (waypoint.locationUnits == "GPS") {
         // Get GPS location of drone
         var droneGpsLocation = this.getDroneGpsLocation();
         // Calculate distance to waypoint
         var displacement = geolib.getDistance({latitude: droneGpsLocation[0], longitude: droneGpsLocation[1]},
                                               {latitude: waypoint.location[0], longitude: waypoint.location[1]}, 1, 2);
-        if (displacement > 0.1) // 0.1 is the horizontal tolerance (in meters)
-        {
+        if (displacement > 0.1) { // 0.1 is the horizontal tolerance (in meters)
             // Reactivate waypoint
             console.log(chalk.red.inverse("Not close enough. Reactivating mission"));
             this.activateWaypoint();
@@ -487,14 +475,12 @@ WaypointNavigator.prototype.reviewMission = function (error, results)
         // Update location cache
         this.locationCache.gps = waypoint.location; //TODO: Add more
     }
-    else
-    {
+    else {
         // Get location of drone
         var droneLocation = waypoint.location; //= self.getDroneLocation();
         // Calculate displacement to waypoint relative to drone
         var displacement = Math.hypot(droneLocation[0] - waypoint.location[0], droneLocation[1] - waypoint.location[1]);
-        if (displacement > 0.1) // 0.1 is the horizontal tolerance (in meters)
-        {
+        if (displacement > 0.1) { // 0.1 is the horizontal tolerance (in meters)
             // Reactivate waypoint
             console.log(chalk.red.inverse("Not close enough. Reactivating mission"));
             this.activateWaypoint();
@@ -515,10 +501,9 @@ WaypointNavigator.prototype.reviewMission = function (error, results)
     };
     // Execute postscript
     try { waypoint.postscript(clearWaypoint.bind(this)); }
-    catch (err2)
-    {
+    catch (err2) {
         err2.message = "Error while executing postscript: " + err2.message;
-        throw err2;
+        console.error(err2);
         clearWaypoint();
     }
 };
