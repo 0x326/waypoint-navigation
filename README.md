@@ -63,7 +63,16 @@ This syntax is intended to be an API for another program, not to be typed by han
  - `.manual-calibrate`: Calibrates the compass
 
 #### Syntax for Diagnostics
- - `.navdata`: Opens a socket.io server and forwards all the navigation data sent from the drone ("navdata"); Listens on localhost:3000
+ - `.navdata`: Opens a socket.io server and forwards all the navigation data sent from the drone ("navdata"); Listens on localhost:3000. Use [0x326/graphic-object-monitoring](https://github.com/0x326/graphic-object-monitoring) to visualize navdata
+
+### Instructions for manual override
+ - `.manual`: Opens a socket.io server on port 3000 and listens for manual flight instructions from the web browser
+ - Key Map:
+     - WSAD >> Forward, Backward, Left, and Right
+     - QE >> Counterclockwise and clockwise
+     - Spacebar/Shift+Spacebar >> up and down
+     - X >> stop
+     - TR >> takeoff and land
 
 ### Notes
  - Use `dms` package for GPS unit standardization?
