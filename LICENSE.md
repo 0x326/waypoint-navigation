@@ -18,7 +18,7 @@ This project is licensed to you under the following license:
 ----------
 
 
-The following is the license under which we received the code at [https://github.com/eschnou/ardrone-autonomy](https://github.com/eschnou/ardrone-autonomy):
+The following is the license under which we received the code at <https://github.com/eschnou/ardrone-autonomy>
 
 > Copyright (c) 2013 by Laurent Eschenauer <laurent@eschenauer.be>
 > 
@@ -45,7 +45,7 @@ The following is the license under which we received the code at [https://github
 ----------
 
 
-The following is the license under which we received the code at [https://github.com/eschnou/ardrone-webflight](https://github.com/eschnou/ardrone-webflight):
+The following is the license under which we received the code at <https://github.com/eschnou/ardrone-webflight>
 
 > Copyright (c) 2013 by the AUTHORS
 > 
@@ -68,7 +68,7 @@ The following is the license under which we received the code at [https://github
 > TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 > SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-The following is the license under which we received the code at [https://github.com/RobertWHurst/KeyboardJS](https://github.com/RobertWHurst/KeyboardJS)
+The following is the license under which we received the code at <https://github.com/RobertWHurst/KeyboardJS>
 
 > The MIT License (MIT)
 > 
