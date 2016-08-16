@@ -11,6 +11,7 @@ const ordinal = require("ordinal");
 const chalk = require("chalk");
 
 var waypointNavigation = new WaypointNavigator();
+var isBottomCameraActivated = false;
 // Sometimes REPL will be temporarily closed for the manual override
 // This is to distinguish whether the process should close when the REPL closes
 // and when the REPL closes to allow the manual piloting
@@ -183,25 +184,28 @@ function startRepl () {
         }
     });
     replServer.defineCommand('disableEmergency', {
-        help: 'Activate manual override',
+        help: 'Disable emergency',
         action: function (argv) {
             executeCommand(this, argv, function (args) {
+                console.log("This command is not yet implemented");
                 //TODO: Add code
             });
         }
     });
     replServer.defineCommand('enableEmergency', {
-        help: 'Activate manual override',
+        help: 'Enable emergency',
         action: function (argv) {
             executeCommand(this, argv, function (args) {
+                console.log("This command is not yet implemented");
                 //TODO: Add code
             });
         }
     });
     /*replServer.defineCommand('changeVideoChannel', {
-        help: 'Activate manual override',
+        help: 'Switch the video feed',
         action: function (argv) {
             executeCommand(this, argv, function (args) {
+                console.log("This command is not yet implemented");
                 ;
             });
         }
@@ -405,6 +409,120 @@ function startRepl () {
             });
         }
     });
+    replServer.defineCommand('manual', {
+        help: 'Opens a server for manual override',
+        action: function (argv) {
+            executeCommand(this, argv, function (args) {
+                startServer();
+                app.use(express.static('web-UI-public'));
+                io.on('connection', function(socket) {
+                    // Disable the controller upon connection
+                    waypointNavigation.mission().control().disable();
+                    // Emit that the manual override is active
+                    socket.emit('manual-override', true);
+                    socket.on('manual-override', function(isActivated) {
+                        try {
+                            isActivated = Boolean(isActivated);
+                            if (isActivated) {
+                                waypointNavigation.mission().control().disable();
+                                socket.emit('manual-override', true);
+                            }
+                            else {
+                                waypointNavigation.mission().control().enable();
+                                socket.emit('manual-override', false);
+                            }
+                        }
+                        catch (err) {
+                            // Do nothing
+                        }
+                    });
+                    socket.on('manual-speed', function (speedCommand) {
+                        var client = waypointNavigation.mission().client();
+                        var xSpeedCommand, ySpeedCommand, zSpeedCommand, yawSpeedCommand;
+                        // Check speeds
+                        if (typeof speedCommand != "object") {
+                            return;
+                        }
+                        var propertyNames = ["forward", "backward", "left", "right", "up", "down", "clockwise", "counterClockwise"];
+                        propertyNames.forEach(function (propertyName) {
+                            if (typeof this[propertyName] != "number") {
+                                try {
+                                    this[propertyName] = Number(this[propertyName]);
+                                }
+                                catch (err) {
+                                    this[propertyName] = 0;
+                                }
+                            }
+                        }, speedCommand);
+                        // Calculate speeds
+                        xSpeedCommand = speedCommand.forward - speedCommand.backward;
+                        ySpeedCommand = speedCommand.right - speedCommand.left;
+                        zSpeedCommand = speedCommand.up - speedCommand.down;
+                        yawSpeedCommand = speedCommand.clockwise - speedCommand.counterClockwise;
+                        
+                        // Command speeds
+                        client.front(within(xSpeedCommand));
+                        client.right(within(ySpeedCommand));
+                        client.up(within(zSpeedCommand));
+                        client.clockwise(within(yawSpeedCommand));
+                    });
+                    socket.on('manual-state', function(stateCommand) {
+                        var client = waypointNavigation.mission().client();
+                        // Check states
+                        if (typeof stateCommand != "object") {
+                            return;
+                        }
+                        if (typeof stateCommand._id != "number") {
+                            stateCommand._id = null;
+                        }
+                        var propertyNames = ["stop", "takeoff", "land", "disableEmergency", "enableEmergency", "flip", "switchChannel"];
+                        propertyNames.forEach(function (propertyName) {
+                            if (typeof this[propertyName] != "boolean") {
+                                try {
+                                    this[propertyName] = Boolean(this[propertyName]);
+                                }
+                                catch (err) {
+                                    this[propertyName] = false;
+                                }
+                            }
+                        }, stateCommand);
+                        // Command states
+                        if (stateCommand.stop) {
+                            client.stop();
+                        }
+                        if (stateCommand.takeoff) {
+                            client.takeoff();
+                        }
+                        if (stateCommand.land) {
+                            client.land();
+                        }
+                        if (stateCommand.disableEmergency) {
+                            client.disableEmergency();
+                        }
+                        if (stateCommand.enableEmergency) {
+                            //TODO: Figure out how to do this
+                            console.log("Enable-Emergency is ignored");
+                        }
+                        if (stateCommand.flip) {
+                            //TODO: Workout flips
+                            console.log("Flip is ignored");
+                        }
+                        if (stateCommand.switchChannel) {
+                            client.config('video:video_channel', Number(isBottomCameraActivated) * 3);
+                            isBottomCameraActivated = !isBottomCameraActivated;
+                        }
+                        socket.emit('manual-state-received', stateCommand._id);
+                    });
+                    socket.on('disconnect', function () {
+                        // Reenable the controller upon a disconnect
+                        waypointNavigation.mission().control().enable();
+                        // Emit that the manual override is disabled
+                        io.emit('manual-override', false);
+                    });
+                });
+            });
+        }
+    });
     replServer.on('exit', function () {
         console.log("\n" + "Landing drone");
         waypointNavigation.mission().control().disable();
@@ -467,6 +585,16 @@ function interpretCoordinate (args) {
         //
     });
     return {x: xCoordinate, y:yCoordinate, z:zCoordinate, units:units, prescript:prescript, postscript:postscript};
+}
+function within(x, min, max) {
+    'use strict';
+    if (x < min) {
+        return min;
+    } else if (x > max) {
+        return max;
+    } else {
+        return x;
+    }
 }
 
 // This function provides a wrapper to do the redundant tasks that must always be done before and after executing the logic of a command

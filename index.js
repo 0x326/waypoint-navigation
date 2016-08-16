@@ -5,7 +5,7 @@
 // It enables travel to multiple waypoints while using a GPS to verify the drone actually flew to the waypoint
 
 //// Init ////
-const autonomy = require('ardrone-autonomy-custom');
+const autonomy = require('ardrone-autonomy');
 const date = require("dateformat");
 const sylvester = require("sylvester");
 const convert = require("convert-units");
