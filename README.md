@@ -3,7 +3,7 @@ Waypoint Naviagation
 
 This software builds off of [eschnou/ardrone-autonomy](https://github.com/eschnou/ardrone-autonomy) to allow the Parrot AR.Drone to fly towards a tentative list of waypoints.  The waypoints can be relative to the drone's starting position or GPS coordinates. Mixing the two is not currently supported. The positive X axis is north while the positive Y axis is east.
 
-This software supports "prescripts" and "postscripts", Functions to be called before a waypoint is activated and after the waypoint is met.  Presently, the first default waypoint has a prescript for a flat trim, takeoff, and a compass calibration before it goes to the point (0m, 0m, 1m).  Then any user addded waypoints will be activated.  When the list of waypoints are all activated and complete, the drone lands. 
+This software supports "prescripts" and "postscripts", Functions to be called before a waypoint is activated and after the waypoint is met.  Presently, the first default waypoint has a prescript for a flat trim, takeoff, and a compass calibration before it goes to the point (0m, 0m, 1m).  Then user-addded waypoints will be activated.  After all waypoint are complete, the drone lands. 
 
 Specifications for Text-Based UI
 --------------------------------
