@@ -1,8 +1,0 @@
-.add X=0 Y=0 m
-.add X=0.75 Y=0 m
-.add X=0.75 Y=0.75 m
-.add X=0 Y=0.75 m
-.add X=0 Y=0 m
-.list
-.start
-

@@ -1,8 +1,0 @@
-.add X=2.30 Z=1.4 m
-.add X=2.30 Y=-3.50 Z=1.4 m
-.add X=0 Y=-3.50 Z=1.4 m
-.add X=-2.60 Y=-3.50 Z=1.4 m
-.add X=-2.60 Y=0 Z=1.7 m
-.add X=0 Y=0 m
-.list
-.start
