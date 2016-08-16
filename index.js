@@ -4,8 +4,6 @@
 // This code serves as an additional layer on top of a custom version of Eschnou's Ardrone-autonomy; 
 // It enables travel to multiple waypoints while using a GPS to verify the drone actually flew to the waypoint
 
-'use strict';
-
 //// Init ////
 const autonomy = require('ardrone-autonomy-custom');
 const date = require("dateformat");
@@ -49,13 +47,15 @@ mission.control().on('goalLeft', function () { console.log("goal left"); });*/
 
 // startFlight acts as a prescript to the first waypoint
 // It tells the drone to takeoff so that the drone can move
-function startFlight (callback)
-{
-    if (typeof mission.ftrim == "function")
+function startFlight (callback) {
+    'use strict';
+    if (typeof mission.ftrim == "function") {
         mission.ftrim();
+    }
     mission.takeoff();
-    if (typeof mission.calibrate == "function")
+    if (typeof mission.calibrate == "function") {
         mission.wait(4000).calibrate();
+    }
     mission.zero();
     var self = this;
     mission.run(function (error, result) {
@@ -65,8 +65,8 @@ function startFlight (callback)
 }
 
 module.exports = WaypointNavigator;
-function WaypointNavigator ()
-{
+function WaypointNavigator () {
+    'use strict';
     // The waypoint buffer is like a To-Do list of waypoints yet to reach. The waypoints are targeted in succession
     this.waypointBuffer = [ new this.Waypoint(0, 0, 1, "m", startFlight) ]; // Fill the buffer with a waypoint that goes nowhere
     // A boolean value which indicates whether there is a thread executing the waypoints in the buffer.
@@ -75,35 +75,34 @@ function WaypointNavigator ()
     // A memo to store an estimates of the drone's location when devices such as GPS are unavailable
     this.locationCache = {coordinateGrid: [0, 0, 0], gps: undefined};
 }
-WaypointNavigator.prototype.mission = function ()
-{
+WaypointNavigator.prototype.mission = function () {
+    'use strict';
     return mission;
-}
+};
 // Turns off the controller. (Drone is likely to crash soon if it is not controlled by anything)
-WaypointNavigator.prototype.seizeControl = function ()
-{
+WaypointNavigator.prototype.seizeControl = function () {
+    'use strict';
     mission.control().disable();
     //TODO: Do more stuff
     //mission.client().land();
     return;
-}
+};
 // Turns on the controller
-WaypointNavigator.prototype.releaseControl = function ()
-{
+WaypointNavigator.prototype.releaseControl = function () {
+    'use strict';
     mission.control().enable();
-}
+};
 
 //// Build Waypoint System ////
 // doNothing is a dummy prescript/postscript that does nothing
 // It acts as a placeholder
-var doNothing = function (callback)
-{
+var doNothing = function (callback) {
     callback();
 };
 
 // This function creates a Waypoint object
-WaypointNavigator.prototype.Waypoint = function (xCoordinate, yCoordinate, zCoordinate, units, prescript, postscript)
-{
+WaypointNavigator.prototype.Waypoint = function (xCoordinate, yCoordinate, zCoordinate, units, prescript, postscript) {
+    'use strict';
     // xCoordinate, yCoordinate, zCoordinate accept numbers
     // units accepts a String
     // prescript and postscript accept functions (to be executed before/after the waypoint, respectively)
@@ -117,25 +116,31 @@ WaypointNavigator.prototype.Waypoint = function (xCoordinate, yCoordinate, zCoor
     postscript = typeof(postscript) == "undefined" ? doNothing : postscript;
     
     // Check parameters
-    if (typeof(xCoordinate) != "number")
+    if (typeof(xCoordinate) != "number") {
         // Coordinate parameter is not correct
         throw new Error("xCoordinate must be a number, not " + typeof(xCoordinate));
-    else if (typeof(yCoordinate) != "number")
+    }
+    else if (typeof(yCoordinate) != "number") {
         // Coordinate parameter is not correct
         throw new Error("yCoordinate must be a number, not " + typeof(yCoordinate));
-    else if (typeof(zCoordinate) != "number")
+    }
+    else if (typeof(zCoordinate) != "number") {
         // Coordinate parameter is not correct
         throw new Error("zCoordinate must be a number, not " + typeof(zCoordinate));
-    else if (typeof(units) != "string")
+    }
+    else if (typeof(units) != "string") {
         // Unit parameter is not correct
         throw new Error("Units must be a String, not " + typeof(units));
-    else if (typeof(prescript) != "function")
+    }
+    else if (typeof(prescript) != "function") {
         // Script parameter is not functions
         throw new Error("Prescript must be a function, not " + typeof(prescript));
-    else if (typeof(postscript) != "function")
+    }
+    else if (typeof(postscript) != "function") {
         // Script parameter is not functions
         throw new Error("Postscript must be a function, not " + typeof(postscript));
-    else ; // Parameters are good
+    }
+    // Parameters are good
     
     // Create Waypoint
     this.location = [xCoordinate, yCoordinate, zCoordinate];
@@ -143,51 +148,65 @@ WaypointNavigator.prototype.Waypoint = function (xCoordinate, yCoordinate, zCoor
     this.prescript = prescript;
     this.prescript.isCalled = false;
     this.postscript = postscript;
-    if (this.prescript != doNothing)
+    if (this.prescript != doNothing) {
         this.hasPrescript = true;
-    else
+    }
+    else {
         this.hasPrescript = false;
-    if (this.postscript != doNothing)
+    }
+    if (this.postscript != doNothing) {
         this.hasPostscript = true;
-    else
+    }
+    else {
         this.hasPostscript = false;
-}
+    }
+};
+
 // Checks a waypoint to make sure it is valid
 WaypointNavigator.prototype.isWaypoint = function (waypoint)
 {
-    if (typeof(waypoint.location) != "object")
+    if (typeof(waypoint.location) != "object") {
         // Location is not an array
         return false;
-    else if (typeof(waypoint.location[0]) != "number")
+    }
+    else if (typeof(waypoint.location[0]) != "number") {
         // X coordinate component is not a number
         return false;
-    else if (typeof(waypoint.location[1]) != "number")
+    }
+    else if (typeof(waypoint.location[1]) != "number") {
         // Y coordinate component is not a number
         return false;
-    else if (typeof(waypoint.location[2]) != "number")
+    }
+    else if (typeof(waypoint.location[2]) != "number") {
         // Z coordinate component is not a number
         return false;
-    else if (typeof(waypoint.locationUnits) != "string")
+    }
+    else if (typeof(waypoint.locationUnits) != "string") {
         // Unit parameter is not correct
         return false;
-    else if (typeof(waypoint.prescript) != "function")
+    }
+    else if (typeof(waypoint.prescript) != "function") {
         return false;
-    else if (typeof(waypoint.postscript) != "function")
+    }
+    else if (typeof(waypoint.postscript) != "function") {
         return false;
+    }
 
     // Waypoint is a valid waypoint
     return true;
-}
+};
 
 // Adds a waypoint to the buffer
 WaypointNavigator.prototype.addWaypoint = function (waypoint)
 {
     console.log(chalk.dim("Adding waypoint"));
-    if(this.isWaypoint(waypoint))
+    if(this.isWaypoint(waypoint)){
         this.waypointBuffer.push(waypoint);
-    else
+    }
+    else {
         throw new Error("The argued waypoint is not actually a waypoint");
-}
+    }
+};
 
 // Inserts a waypoint at the given index (at the front, by default)
 WaypointNavigator.prototype.insertWaypoint = function (waypoint, arrayIndex)
@@ -195,12 +214,14 @@ WaypointNavigator.prototype.insertWaypoint = function (waypoint, arrayIndex)
     console.log(chalk.dim("Inserting waypoint"));
     // Setup default values
     arrayIndex = typeof arrayIndex == "undefined" ? 0 : arrayIndex;
-    if(this.isWaypoint(waypoint))
+    if(this.isWaypoint(waypoint)) {
         this.waypointBuffer.splice(arrayIndex, 0, waypoint); // starting at `arrayIndex`, remove ``0 elements, then add `waypoint`; automatically assigns result to itself
-    else
+    }
+    else {
         throw new Error("the argued waypoint is not actually a waypoint");
+    }
     return;
-}
+};
 
 // Ejects the waypoint at the given index (the one at the front, by default)
 WaypointNavigator.prototype.removeWaypoint = function (arrayIndex)
@@ -210,7 +231,7 @@ WaypointNavigator.prototype.removeWaypoint = function (arrayIndex)
     arrayIndex = typeof arrayIndex == "undefined" ? 0 : arrayIndex;
     this.waypointBuffer.splice(arrayIndex, 1); // removes `1` element starting at `arrayIndex`; autonmatically assigns result to itself
     return;
-}
+};
 
 // Adds a dummy waypoint with the prescript to hover for the given time
 WaypointNavigator.prototype.addLoiterWaypoint = function (time)
@@ -221,24 +242,27 @@ WaypointNavigator.prototype.addLoiterWaypoint = function (time)
         var waypoint = this.waypointBuffer[this.waypointBuffer.length - 1];
         waypoint.prescript = function () {
             mission.hover(time);
-        }
+        };
         waypoint.postscript = doNothing;
     }
-    else
+    else {
         var waypoint = new this.Waypoint(
             this.locationCache.coordinateGrid[0],
             this.locationCache.coordinateGrid[1], 
             this.locationCache.coordinateGrid[2], 
-            "m", 
+            "m", // Units: meters
             function () {
                 mission.hover(time);
             },
             doNothing);
-    if(this.isWaypoint(waypoint))
+    }
+    if(this.isWaypoint(waypoint)) {
         this.waypointBuffer.push(waypoint);
-    else
+    }
+    else {
         throw new Error("The loiter waypoint is not actually a waypoint. Check prior item in buffer");
-}
+    }
+};
 
 // Converts a waypoint's coordinate point to the desired units
 WaypointNavigator.prototype.convertWaypoint = function (waypointLocation, currentUnits, desiredUnits)
@@ -248,14 +272,14 @@ WaypointNavigator.prototype.convertWaypoint = function (waypointLocation, curren
     waypointLocation[1] = convert(waypointLocation[1]).from(currentUnits).to(desiredUnits);
     waypointLocation[2] = convert(waypointLocation[2]).from(currentUnits).to(desiredUnits);
     return waypointLocation;
-}
+};
 
 // Gets the drone's location in relation to its starting location
 WaypointNavigator.prototype.getDroneLocation = function ()
 {
     console.log(chalk.dim("Getting drone location: ") + chalk.dim(JSON.stringify(this.locationCache.coordinateGrid)));
     return this.locationCache.coordinateGrid;
-}
+};
 
 // Gets the drone's GPS location
 WaypointNavigator.prototype.getDroneGpsLocation = function ()
@@ -263,30 +287,32 @@ WaypointNavigator.prototype.getDroneGpsLocation = function ()
     console.log(chalk.dim("Getting drone GPS location"));
     //mission.control()._ekf._last_gps_lat;
     return; //TODO: Add code to get drone's GPS location
-}
+};
 
 // Get the drone's absolute bearing (see flight terminology)
 WaypointNavigator.prototype.getDroneAbsoluteBearing = function ()
 {
     return mission.control()._ekf.state().absoluteYaw;
-}
+};
 
 // Send drone to a next waypoint or to the given waypoint
 WaypointNavigator.prototype.activateWaypoint = function (waypoint) 
 {   //TODO: Check buffer overide functionality
     
     // If we are not allow to activate waypoints, quit now
-    if (!this.isAllowedToActivateWaypoints)
+    if (!this.isAllowedToActivateWaypoints) {
         return;
+    }
     
     // If waypoint, override buffer
     // Check to see if waypointBuffer is overridden with new waypoint
-    if (waypoint instanceof this.Waypoint)
+    if (waypoint instanceof this.Waypoint) {
         // Insert to front then follow buffer as normal
         this.insertWaypoint(waypoint);
-    else if (this.waypointBuffer.length > 0)
+    }
+    else if (this.waypointBuffer.length > 0) {
         // Buffer not overridden but it has more waypoints. Proceed
-        ;
+    }
     else
     {
         // There is no waypoint parameter and the waypoint buffer is empty so
@@ -316,7 +342,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
         catch (err)
         {
             err.message = "Error while executing prescript: " + err.message;
-            throw err;
+            console.error(err);
             var self = this;
             setImmediate(function () {
                 self.activateWaypoint();
@@ -348,8 +374,9 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
         var displacementVector = $V([Math.cos(displacementBearing) * displacement, Math.sin(displacementBearing) * displacement]);
         // Get angle of drone
         var droneBearing = this.getDroneAbsoluteBearing();
-        if (droneBearing == null)
+        if (droneBearing === null) {
             droneBearing = displacementBearing;
+        }
         // Calculate angle needed to rotate so that the drone is facing the waypoint
         var yawAdjustment = displacementBearing - droneBearing;
     }
@@ -370,13 +397,13 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
         // Calculate angle of vector (in radians)
         console.log(chalk.inverse.blue("Displacement Vector: ", displacementVector.elements));
         var displacementAngle = Math.atan2(displacementVector.elements[1], displacementVector.elements[0]);
-        if (displacementAngle != null)
+        if (displacementAngle !== null)
         {
             // Get angle of drone
             var droneBearing = this.getDroneAbsoluteBearing();
             console.log(chalk.blue("Drone Bearing: ", droneBearing / Math.PI * 180));
             console.log(chalk.blue("Displacement Angle: ", displacementAngle / Math.PI * 180));
-            if (droneBearing == null)
+            if (droneBearing === null)
                 droneBearing = displacementAngle;
             // Calculate angle needed to rotate so that the drone is facing the waypoint
             var yawAdjustment = displacementAngle - droneBearing;
@@ -414,8 +441,9 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
             }
             mission.cw(rotationAmmount);
         }*/
-        if (Math.abs(yawAdjustment) > 0.1)
+        if (Math.abs(yawAdjustment) > 0.1) {
             mission.cw(yawAdjustment);
+        }
         mission.zero();
         // Go to waypoint
         mission.go({x: displacement, y: 0, z:waypoint.location[2], yaw:0}).hover(100);
@@ -427,7 +455,7 @@ WaypointNavigator.prototype.activateWaypoint = function (waypoint)
     console.log(chalk.dim("Running mission"));
     mission.run(this.reviewMission.bind(this));
     //// Mission Complete ////
-}
+};
 
 WaypointNavigator.prototype.reviewMission = function (error, results) 
 {
@@ -493,4 +521,4 @@ WaypointNavigator.prototype.reviewMission = function (error, results)
         throw err2;
         clearWaypoint();
     }
-}
+};

@@ -3,8 +3,6 @@
 // John Meyer
 // This code serves a text-based UI for the waypoint-navigation module
 
-'use strict';
-
 //// Create User Interface ////
 // Setup UI
 const WaypointNavigator = require("./");
@@ -20,8 +18,7 @@ var shouldEndProgram = true;
 
 // Only setup a server if this is the root module
 var canSetupServer = require.main === module;
-if (canSetupServer)
-{
+if (canSetupServer) {
     // Setup server for forwarding navdata
     var express = require('express');
     var app = express();
@@ -29,10 +26,9 @@ if (canSetupServer)
     var io = require('socket.io')(server);
     var serverPort = 3000;
 }
-function startServer ()
-{
-    if (canSetupServer)
-    {
+function startServer () {
+    'use strict';
+    if (canSetupServer) {
         server.listen(serverPort);
         console.log("Listening on Port %d", serverPort);
     }
@@ -40,29 +36,27 @@ function startServer ()
 
 // Ask for Waypoints
 //TODO: Ask for waypoints (in UI)
-function startRepl ()
-{
+function startRepl () {
+    'use strict';
     console.log("");
     var replServer = repl.start({prompt: '> ', useColors: true});
     replServer.context.waypointNavigation = waypointNavigation;
     replServer.defineCommand('list', {
         help: 'Lists all waypoints and their coordinates',
-        action: function(argv)
-        {
+        action: function(argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.waypointBuffer.forEach(function (value, index, array) {
                     var prescriptStatement = value.hasPrescript ? "(Prescript) " : "";
                     var postscriptStatement = value.hasPostscript ? "(Postscript) " : "";
-                    console.log("Waypoint " + index + ": (" + value.location[0] + ", " + value.location[1]+ ", " + value.location[2] + ")"
-                                + " " + chalk.green(prescriptStatement) + chalk.blue(postscriptStatement));
+                    console.log("Waypoint " + index + ": (" + value.location[0] + ", " + value.location[1]+ ", " + value.location[2] + ")" +
+                                " " + chalk.green(prescriptStatement) + chalk.blue(postscriptStatement));
                 });
             });
         }
     });
     replServer.defineCommand('add', {
         help: 'Adds a waypoint to the waiting list',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 // Read arguments
                 if (args[0] == "loiter") // is a loiter command
@@ -88,8 +82,10 @@ function startRepl ()
                         waypointNavigation.addLoiterWaypoint(5000);
                     }
                 }
-                else // is a regular waypoint command
+                else {
+                    // is a regular waypoint command
                     var obj = interpretCoordinate(args);
+                }
                 // Create waypoint
                 var waypoint = new waypointNavigation.Waypoint(obj.x, obj.y, obj.z, obj.units, obj.prescript, obj.postscript);
                 // Add waypoint to buffer
@@ -99,8 +95,7 @@ function startRepl ()
     });
     replServer.defineCommand('insert', {
         help: 'Inserts a waypoint to the front of the waiting list',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var index = args.shift();
                 try { index = Number(index); }
@@ -116,24 +111,24 @@ function startRepl ()
     });
     replServer.defineCommand('remove', {
         help: 'Removes a waypoint to the waiting list',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 // Read arguments
                 args.forEach(function (value, index, array) {
-                    if (typeof(value) == "number" && value >= 0)
+                    if (typeof(value) == "number" && value >= 0) {
                         waypointNavigation.removeWaypoint(value);
-                    else
+                    }
+                    else {
                         // Argument cannot represent an index value for the Array waypointBuffer
                         throw new Error("The " + index + ordinal.english.indicator(index) + " argument is not a whole number. All arguments must be whole numbers");
+                    }
                 });
             });
         }
     });
     replServer.defineCommand('start', {
         help: "Tells the drone to go to the next given waypoint",
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.isAllowedToActivateWaypoints = true;
                 waypointNavigation.activateWaypoint();
@@ -142,8 +137,7 @@ function startRepl ()
     });
     replServer.defineCommand('abort', {
         help: 'Tells the drone to stop its current course',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.isAllowedToActivateWaypoints = false;
                 waypointNavigation.mission().abort();
@@ -152,8 +146,7 @@ function startRepl ()
     });
     replServer.defineCommand('erase', {
         help: 'Clears all waypoints from the list',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.waypointBuffer = [];
             });
@@ -161,8 +154,7 @@ function startRepl ()
     });
     replServer.defineCommand('takeoff', {
         help: 'Tells the drone to takeoff',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().control().enable();
                 waypointNavigation.mission().client().takeoff();
@@ -171,8 +163,7 @@ function startRepl ()
     });
     replServer.defineCommand('land', {
         help: 'Tells the drone to land',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().control().disable();
                 waypointNavigation.mission().client().stop();
@@ -182,8 +173,7 @@ function startRepl ()
     });
     replServer.defineCommand('battery', {
         help: 'Get the battery level',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 console.log("Battery: " + waypointNavigation.mission().client().battery());
             });
@@ -191,8 +181,7 @@ function startRepl ()
     });
     replServer.defineCommand('ftrim', {
         help: 'Get a flat trim',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().client().ftrim();
             });
@@ -200,26 +189,23 @@ function startRepl ()
     });
     replServer.defineCommand('disableEmergency', {
         help: 'Activate manual override',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
-                ;
+                //TODO: Add code
             });
         }
     });
     replServer.defineCommand('enableEmergency', {
         help: 'Activate manual override',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
-                ;
+                //TODO: Add code
             });
         }
     });
     /*replServer.defineCommand('changeVideoChannel', {
         help: 'Activate manual override',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 ;
             });
@@ -234,8 +220,7 @@ function startRepl ()
     */
     replServer.defineCommand('manual-forward', {
         help: 'Manual: Go forward a certain speed',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
                 if (typeof(args[0]) != "undefined")
@@ -256,8 +241,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-backward', {
         help: 'Manual: Go backward a certain speed',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
                 if (typeof(args[0]) != "undefined")
@@ -278,8 +262,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-left', {
         help: 'Manual: Go left a certain speed',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
                 if (typeof(args[0]) != "undefined")
@@ -300,8 +283,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-right', {
         help: 'Manual: Go right a certain speed',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
                 if (typeof(args[0]) != "undefined")
@@ -322,8 +304,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-clockwise', {
         help: 'Manual: Turn clockwise a certain speed',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
                 if (typeof(args[0]) != "undefined")
@@ -344,8 +325,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-counterClockwise', {
         help: 'Manual: Turn counter-clockwise a certain speed',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 var commandSpeed = 0;
                 if (typeof(args[0]) != "undefined")
@@ -366,8 +346,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-stop', {
         help: 'Manual: Stop the drone',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().client().stop();
             });
@@ -375,8 +354,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-takeoff', {
         help: 'Manual: Takeoff',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().client().takeoff();
             });
@@ -384,8 +362,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-land', {
         help: 'Manual: Land',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().client().land();
             });
@@ -393,25 +370,28 @@ function startRepl ()
     });
     replServer.defineCommand('manual-flip', {
         help: 'Manual: Perform a flip',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
+                // The following is modified from https://github.com/eschnou/ardrone-webflight/blob/master/plugins/pilot/public/js/pilot.js
                 var direction = null;
                 if (typeof(args[0]) == "undefined")
                 {
                     //TODO: Flip in the direction of motion
-                    client.animate('flipLeft', 1000);
+                    waypointNavigation.mission().client().animate('flipLeft', 1000);
                 }
-                else if (args[0] == "forward")
-                    client.animate('flipAhead', 1000);
-                else if (args[0] == "backward")
-                    client.animate('flipBehind', 1000);
-                else if (args[0] == "left")
-                    client.animate('flipLeft', 1000);
-                else if (args[0] == "right")
-                    client.animate('flipRight', 1000);
-                else
-                {
+                else if (args[0] == "forward") {
+                    waypointNavigation.mission().client().animate('flipAhead', 1000);
+                }
+                else if (args[0] == "backward") {
+                    waypointNavigation.mission().client().animate('flipBehind', 1000);
+                }
+                else if (args[0] == "left") {
+                    waypointNavigation.mission().client().animate('flipLeft', 1000);
+                }
+                else if (args[0] == "right") {
+                    waypointNavigation.mission().client().animate('flipRight', 1000);
+                }
+                else {
                     // Argument is not recognized
                     // Send error notice to the console but don't throw an error
                     console.error("The flip command's argument (%s) is not recognized", args[0]);
@@ -421,8 +401,7 @@ function startRepl ()
     });
     replServer.defineCommand('manual-calibrate', {
         help: 'Manual: Calibrate',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 waypointNavigation.mission().client().calibrate(0);
             });
@@ -438,8 +417,7 @@ function startRepl ()
     */
     replServer.defineCommand('navdata', {
         help: 'Opens a server to investigate the navdata',
-        action: function (argv)
-        {
+        action: function (argv) {
             executeCommand(this, argv, function (args) {
                 startServer();
                 app.use(express.static('../graphic-object-monitoring/public'));
@@ -463,27 +441,22 @@ function startRepl ()
 // Interprets coordinate data from the REPL
 // args accepts an array of strings which represent the arguments from the command line
 // Returns {x:Number, y:Number, z:Number, units:String, prescript:Function, postscript:Function}
-function interpretCoordinate (args)
-{
+function interpretCoordinate (args) {
     var xCoordinate, yCoordinate, zCoordinate, units, prescript, postscript;
     args.forEach(function (value, index, array) {
-        if (value.indexOf("=") != -1)
-        {
+        if (value.indexOf("=") != -1) {
             // Argument is a coordinate
             var splitValue = value.split("=");
             var component = splitValue[0].toUpperCase();
             var magnitude = splitValue[1];
-            try
-            {
+            try {
                 magnitude = Number(magnitude);
             }
-            catch (err)
-            {
+            catch (err) {
                 err.message = "Magnitude must represent a number";
                 throw err;
             }
-            switch (component)
-            {
+            switch (component) {
                 case "X":
                     xCoordinate = magnitude;
                     break;
@@ -499,8 +472,7 @@ function interpretCoordinate (args)
                     throw new Error("The " + index + ordinal.english.indicator(index) + " argument is incorrect. Invalid component");
             }
         }
-        else if (typeof(global[value]) == "function")
-        {
+        else if (typeof(global[value]) == "function") {
             // Argument is either presript or postscript
             if (typeof(prescript) == "undefined")
                 prescript = global[value];
@@ -511,8 +483,7 @@ function interpretCoordinate (args)
             else
                 console.warn("The " + index + ordinal.english.indicator(index) + "argument is redundant. Ignoring");
         }
-        else
-        {
+        else {
             // Argument is the unit
             units = value;
         }
@@ -521,22 +492,21 @@ function interpretCoordinate (args)
     return {x: xCoordinate, y:yCoordinate, z:zCoordinate, units:units, prescript:prescript, postscript:postscript};
 }
 const KEY_CODE_MAP =  {"0":"96","1":"97","2":"98","3":"99","4":"100","5":"101","6":"102","7":"103","8":"104","9":"105","backspace":"8","tab":"9","return":"13","shift":"16","ctrl":"17","alt":"18","pausebreak":"19","capslock":"20","escape":"27"," ":"32","pageup":"33","pagedown":"34","end":"35","home":"36","left":"37","up":"38","right":"39","down":"40","+":"107","printscreen":"44","insert":"45","delete":"46",";":"186","=":"187","a":"65","b":"66","c":"67","d":"68","e":"69","f":"70","g":"71","h":"72","i":"73","j":"74","k":"75","l":"76","m":"77","n":"78","o":"79","p":"80","q":"81","r":"82","s":"83","t":"84","u":"85","v":"86","w":"87","x":"88","y":"89","z":"90","*":"106","-":"189",".":"190","/":"191","f1":"112","f2":"113","f3":"114","f4":"115","f5":"116","f6":"117","f7":"118","f8":"119","f9":"120","f10":"121","f11":"122","f12":"123","numlock":"144","scrolllock":"145",",":"188","`":"192","[":"219","\\":"220","]":"221","'":"222"};
-function startManualOverride ()
-{
+function startManualOverride () {
     // Setup Key Map for One-handed controls
-    var forward  = 'w'
-      , backward = 's'
-      , left     = 'a'
-      , right    = 'd'
-      , clockwise = 'e'
-      , counterClockwise = 'q'
-      , stop = 'x'
-      , takeoff = 't'
-      , land = 'r'
-      , disableEmergency = 'g'
-      , enableEmergency = 'v'
-      , flip     = 'f'
-      , channel  = 'c'
+    var forward  = 'w',
+        backward = 's',
+        left     = 'a',
+        right    = 'd',
+        clockwise = 'e',
+        counterClockwise = 'q',
+        stop = 'x',
+        takeoff = 't',
+        land = 'r',
+        disableEmergency = 'g',
+        enableEmergency = 'v',
+        flip     = 'f',
+        channel  = 'c'
       ;
     var keyMap = {};
     keyMap[KEY_CODE_MAP[forward]] = {command:'move-forward'};
@@ -556,26 +526,25 @@ function startManualOverride ()
 }
 // This function provides a wrapper to do the redundant tasks that must always be done before and after executing the logic of a command
 // The `callback` function should accept an Array of Strings
-function executeCommand(self, argv, funct)
-{
+function executeCommand(self, argv, funct) {
     self.lineParser.reset();
     self.bufferedCommand = '';
     // If no arguments exist, create an empty placeholder
-    if (typeof(argv) == "undefined")
+    if (typeof(argv) == "undefined") {
         argv = [];
+    }
     // Clean arguments
-    while (argv.indexOf("  ") != -1)
+    while (argv.indexOf("  ") != -1) {
         argv = argv.replace(/  /i, ' ');
+    }
     // Parse arguments
     var args = argv.split(" ");
     // Send to callback function (the function with the logic specific to a particular command)
     try { funct(args); }
-    catch (error)
-    {
+    catch (error) {
         console.error("Error while executing command: " + error.message);
     }
-    finally
-    {
+    finally {
         // Display the prompt
         self.displayPrompt();
     }
