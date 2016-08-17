@@ -7,6 +7,8 @@
         <textarea id="consoleOutput" readonly></textarea>
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
         <script type="application/javascript" src="keyboard.js"></script>
+        <!-- The following imports NPM module `bezier-easing` to `window.bezier` -->
+        <script type="application/javascript" src="bezier-easing-browserified.js"></script>
         <script type="application/javascript">
             var socket = io.connect(window.location.href);
             socket.on('console', function (data) {

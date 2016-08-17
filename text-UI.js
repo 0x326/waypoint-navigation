@@ -465,6 +465,10 @@ function startRepl () {
                         client.right(within(ySpeedCommand));
                         client.up(within(zSpeedCommand));
                         client.clockwise(within(yawSpeedCommand));
+                        // If all speeds are zero, stop
+                        if (xSpeedCommand == ySpeedCommand && ySpeedCommand == zSpeedCommand && zSpeedCommand == yawSpeedCommand && yawSpeedCommand === 0) {
+                            client.stop();
+                        }
                     });
                     socket.on('manual-state', function(stateCommand) {
                         var client = waypointNavigation.mission().client();

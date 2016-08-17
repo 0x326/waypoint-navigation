@@ -2,157 +2,80 @@
 // Builds framework for a manual override
 
 // Define/Declare variables
-var speedCommand = {forward:0, backward:0, left:0, right:0, up:0, down:0, clockwise:0, counterClockwise:0};
-var speedIncrement = {xAxis: 0.01, yAxis: 0.01, zAxis: 0.01, yawAxis: 0.1};
-var lastTimeSpeedSent = -1;
-var stateCommand = {};
-var stateCommandPropertyNames = ["stop", "takeoff", "land", "disableEmergency", "enableEmergency", "flip", "switchChannel"];
-var lastStateCommand;
-var lastStateId = -1;
-var timeInterval = 100;
+var desiredSpeed = {forward:0, backward:0, left:0, right:0, up:0, down:0, clockwise:0, counterClockwise:0};
+var horizontalBezier = bezier(0, 0, 1, 0.5);
+var verticalBezier = bezier(0, 0, 1, 0.5);
+var rotationalBezier = bezier(0, 0, 1, 0.5);
+var speedFunction = {xAxis: horizontalBezier, yAxis: horizontalBezier, zAxis: verticalBezier, yawAxis: rotationalBezier};
+var timetoFullSpeed = {xAxis: 3, yAxis: 3, zAxis: 3, yawAxis: 3};
+var lastTimeSpeedCommandSent = -1;
+var desiredState = {};
+var desireedStatePropertyNames;
+var lastSentDesiredState;
+var timeBetweenCommands = 100; // in miliseconds
+var startingTimeObject = {};
 
 function resetStateCommand () {
-    stateCommand = {stop:false, takeoff:false, land:false, disableEmergency:false, enableEmergency:false, flip:null, switchChannel:false};
-    lastStateCommand = {stop:false, takeoff:false, land:false, disableEmergency:false, enableEmergency:false, flip:null, switchChannel:false};
+    desiredState     = {stop:false, takeoff:false, land:false, disableEmergency:false, enableEmergency:false, flip:null, switchChannel:false};
+    lastSentDesiredState = {stop:false, takeoff:false, land:false, disableEmergency:false, enableEmergency:false, flip:null, switchChannel:false};
+    desireedStatePropertyNames =["stop", "takeoff", "land", "disableEmergency", "enableEmergency", "flip", "switchChannel"];
 }
 
 function startManualOverride () {
     'use strict';
     // Setup Key Map for One-handed controls
-    var forwardKey          = ['w', 'W'],
-        backwardKey         = ['s', 'S'],
-        leftKey             = ['a', 'A'],
-        rightKey            = ['d', 'D'],
-        upKey               = 'spacebar',
-        downKey             = 'shift + spacebar',
-        clockwiseKey        = ['e', 'E'],
-        counterClockwiseKey = ['q', 'Q'],
-        stopKey             = ['x', 'X'],
-        takeoffKey          = ['t', 'T'],
-        landKey             = ['r', 'R'],
-        disableEmergencyKey = ['g', 'G'],
-        enableEmergencyKey  = ['v', 'V'],
-        flipKey             = ['f', 'F'],
-        switchChannelKey    = ['c', 'C'];
+    var directionalKeyMap = [
+        {axis: "xAxis",   direction: "forward",             key: ['w', 'W']},
+        {axis: "xAxis",   direction: "backward",            key: ['s', 'S']},
+        {axis: "yAxis",   direction: "left",                key: ['a', 'A']},
+        {axis: "yAxis",   direction: "right",               key: ['d', 'D']},
+        {axis: "zAxis",   direction: "up",                  key: 'spacebar'},
+        {axis: "zAxis",   direction: "down",                key: 'shift + spacebar'},
+        {axis: "yawAxis", direction: "clockwise",           key: ['e', 'E']},
+        {axis: "yawAxis", direction: "counterClockwise",    key: ['q', 'Q']}
+    ];
+    var stateKeyMap = [
+        {action: "stop", key: ['x', 'X']},
+        {action: "takeoff", key: ['t', 'T']},
+        {action: "land", key: ['r', 'R']},
+        {action: "disableEmergency", key: ['g', 'G']},
+        {action: "enableEmergency", key: ['v', 'V']},
+        {action: "switchChannel", key:['c', 'C']}
+    ];
+    var flipKey = ['f', 'F'];
     
     resetStateCommand();
     // Bind keyboard listeners
-    keyboardJS.bind(forwardKey, function (keyboardEvent) {
-        speedCommand.forward += speedIncrement.xAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.forward = 0;
-        pushCommands();
-        return false;
+    directionalKeyMap.forEach(function(individualKeyMap) {
+        keyboardJS.bind(individualKeyMap.key, function (keyboardEvent) {
+            var presentTime = new Date();
+            var startingTime = startingTimeObject[individualKeyMap.direction];
+            if (typeof startingTime == "undefined") {
+                startingTime = presentTime;
+            }
+            var deltaT = presentTime - startingTime;
+            
+            desiredSpeed[individualKeyMap.direction] = speedFunction[individualKeyMap.axis](deltaT / timetoFullSpeed[individualKeyMap.axis]);
+            pushCommands();
+            return false;
+        }, function (keyboardEvent) {
+            desiredSpeed[individualKeyMap.direction] = 0;
+            pushCommands();
+            return false;
+        });
     });
-    keyboardJS.bind(backwardKey, function (keyboardEvent) {
-        speedCommand.backward += speedIncrement.xAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.backward = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(leftKey, function (keyboardEvent) {
-        speedCommand.left += speedIncrement.yAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.left = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(rightKey, function (keyboardEvent) {
-        speedCommand.right += speedIncrement.yAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.right = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(upKey, function (keyboardEvent) {
-        speedCommand.up += speedIncrement.zAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.up = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(downKey, function (keyboardEvent) {
-        speedCommand.down += speedIncrement.zAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.down = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(clockwiseKey, function (keyboardEvent) {
-        speedCommand.clockwise += speedIncrement.yawAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.clockwise = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(counterClockwiseKey, function (keyboardEvent) {
-        speedCommand.counterClockwise += speedIncrement.yawAxis;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        speedCommand.counterClockwise = 0;
-        pushCommands();
-        return false;
-    });
-    keyboardJS.bind(stopKey, function (keyboardEvent) {
-        stateCommand.stop = true;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        return false;
-    });
-    keyboardJS.bind(takeoffKey, function (keyboardEvent) {
-        stateCommand.takeoff = true;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        return false;
-    });
-    keyboardJS.bind(landKey, function (keyboardEvent) {
-        stateCommand.land = true;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        return false;
-    });
-    keyboardJS.bind(disableEmergencyKey, function (keyboardEvent) {
-        stateCommand.disableEmergency = true;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        return false;
-    });
-    keyboardJS.bind(enableEmergencyKey, function (keyboardEvent) {
-        stateCommand.enableEmergency = true;
-        pushCommands();
-        return false;
-    }, function (keyboardEvent) {
-        return false;
+    stateKeyMap.forEach(function (individualStateKeyMap) {
+        keyboardJS.bind(individualStateKeyMap.key, function (keyboardEvent) {
+            desiredState[individualStateKeyMap.action] = true;
+            pushCommands();
+            return false;
+        }, function (keyboardEvent) {
+            return false;
+        });
     });
     keyboardJS.bind(flipKey, function (keyboardEvent) {
         //TODO: Determine which direction to flip
-        stateCommand.flip;
-        return false;
-    }, function (keyboardEvent) {
-        return false;
-    });
-    keyboardJS.bind(switchChannelKey, function (keyboardEvent) {
-        stateCommand.switchChannel = true;
+        desiredState.flip;
         return false;
     }, function (keyboardEvent) {
         return false;
@@ -162,21 +85,21 @@ function startManualOverride () {
 function pushCommands () {
     'use strict';
     var presentTime = new Date();
-    if (typeof lastTimeSpeedSent == "undefined" || presentTime.valueOf() - lastTimeSpeedSent.valueOf() >= timeInterval) {
+    if (typeof lastTimeSpeedCommandSent == "undefined" || presentTime.valueOf() - lastTimeSpeedCommandSent.valueOf() >= timeBetweenCommands) {
         // Send commands
-        socket.emit('manual-speed', speedCommand);
+        socket.emit('manual-speed', desiredSpeed);
         
-        lastTimeSpeedSent = presentTime;
+        lastTimeSpeedCommandSent = presentTime;
     }
     
-    var isDifferent = stateCommandPropertyNames.some(function (propertyName) {
+    var isDifferent = desireedStatePropertyNames.some(function (propertyName) {
         return this.currentValue[propertyName] != this.lastValue[propertyName];
-    }, {currentValue: stateCommand, lastValue: lastStateCommand});
+    }, {currentValue: desiredState, lastValue: lastSentDesiredState});
     
     if (isDifferent) {
         // Send commands
-        stateCommand._id = presentTime.valueOf();
-        socket.emit('manual-state', stateCommand);
+        desiredState._id = presentTime.valueOf();
+        socket.emit('manual-state', desiredState);
         
         resetStateCommand(); //lastStateCommand = stateCommand;
     }
