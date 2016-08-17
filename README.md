@@ -76,3 +76,4 @@ This syntax is intended to be an API for another program, not to be typed by han
 
 ### Notes
  - Use `dms` package for GPS unit standardization?
+ - Use a PID controller for the manual override instead of a cubic bezier curve?
