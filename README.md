@@ -22,6 +22,13 @@ Objectives: Enable the User to
  
 ### Command line syntax
 
+Run:
+```bash
+# Tested with Node.js v6.14.4
+node text-UI.js
+```
+then use the following commands in the REPL.
+
 #### Essential Syntax
  - `.help`: Shows a list of all the commands supported by the REPL (Read-Eval-Print-Loop)
  - `.list`: Outputs a list of waypoints with their coordinates
